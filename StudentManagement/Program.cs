@@ -15,14 +15,14 @@ namespace StudentManagement
 
             GetNames(out var surnames, out var names, out var patronymics);
 
-            var students = GetStudents(surnames, names, patronymics, 100);
+            var students = GetStudents(surnames, names, patronymics, 1000);
 
             const string students_data_file = "students.csv";
             SaveToFile(students, students_data_file);
 
             var students2 = ReadFromFile(students_data_file);
 
-            var student = students2[0];
+            //var student = students2[0];
 
             //double rating = student;
             //double rating2 = (double)student;
@@ -31,7 +31,31 @@ namespace StudentManagement
 
             var homonyms = GetHomonyms(students2);
 
-            PrintBestLastStudents(students2);
+            //PrintBestLastStudents(students2);
+
+                                          //18.06
+            var birthdays = new Dictionary<string, List<Student>>();
+
+            foreach (var student in students2)
+            {
+                var date = student.Birthday.ToString("dd.MM");
+                if(birthdays.ContainsKey(date))
+                    birthdays[date].Add(student);
+                else
+                    birthdays.Add(date, new List<Student> { student });
+            }
+
+            foreach (var birthday in birthdays)
+            {
+                if (birthday.Value.Count > 1)
+                {
+                    Console.WriteLine(birthday.Key);
+                    foreach (var student in birthday.Value)
+                        Console.WriteLine("\t{0} {1} {2} ({3:dd.MM.yyyy} - возраст {4})",
+                            student.Surname, student.Name, student.Patronymic,
+                            student.Birthday, student.Age);
+                }
+            }
 
             Console.WriteLine("Нажмите Enter для выхода");
             Console.ReadLine();
