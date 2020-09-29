@@ -10,32 +10,7 @@ namespace StudentManagement
 
         static void Main(string[] args)
         {
-            var surnames = new List<string>();
-            var names = new List<string>();
-            var patronymics = new List<string>();
-
-            using (StreamReader names_reader = new StreamReader(__NamesFile))
-            {
-                while (!names_reader.EndOfStream)
-                {
-                    var line = names_reader.ReadLine();
-
-                    var components = line.Split(' ');
-
-                    var surname = components[0];
-                    var name = components[1];
-                    var patronymic = components[2];
-
-                    surnames.Add(surname);
-                    names.Add(name);
-                    patronymics.Add(patronymic);
-
-                    //Console.WriteLine(line);
-                }
-
-                //names_reader.Close();
-                //names_reader.Dispose();
-            }
+            GetNames(out var surnames, out var names, out var patronymics);
 
             var students = new Student[1000];
 
@@ -56,6 +31,31 @@ namespace StudentManagement
 
             Console.WriteLine("Нажмите Enter для выхода");
             Console.ReadLine();
+        }
+
+        private static void GetNames(out List<string> Surnames, out List<string> Names, out List<string> Patronymics)
+        {
+            Surnames = new List<string>();
+            Names = new List<string>();
+            Patronymics = new List<string>();
+
+            using (var names_reader = new StreamReader(__NamesFile))
+            {
+                while (!names_reader.EndOfStream)
+                {
+                    var line = names_reader.ReadLine();
+
+                    var components = line.Split(' ');
+
+                    var surname = components[0];
+                    var name = components[1];
+                    var patronymic = components[2];
+
+                    Surnames.Add(surname);
+                    Names.Add(name);
+                    Patronymics.Add(patronymic);
+                }
+            }
         }
 
         private static List<int> GetRandomRatings(Random rnd, int Count)
