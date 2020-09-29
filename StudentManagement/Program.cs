@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 
 namespace StudentManagement
 {
@@ -11,6 +10,8 @@ namespace StudentManagement
 
         static void Main(string[] args)
         {
+            ComplexTest.Start();
+
             GetNames(out var surnames, out var names, out var patronymics);
 
             var students = GetStudents(surnames, names, patronymics, 100);
