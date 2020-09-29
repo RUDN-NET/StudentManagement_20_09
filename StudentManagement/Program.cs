@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace StudentManagement
@@ -9,13 +10,27 @@ namespace StudentManagement
 
         static void Main(string[] args)
         {
+            var surnames = new List<string>();
+            var names = new List<string>();
+            var patronymics = new List<string>();
+
             using (StreamReader names_reader = new StreamReader(__NamesFile))
             {
                 while (!names_reader.EndOfStream)
                 {
                     var line = names_reader.ReadLine();
 
-                    Console.WriteLine(line);
+                    var components = line.Split(' ');
+
+                    var surname = components[0];
+                    var name = components[1];
+                    var patronymic = components[2];
+
+                    surnames.Add(surname);
+                    names.Add(name);
+                    patronymics.Add(patronymic);
+
+                    //Console.WriteLine(line);
                 }
 
                 //names_reader.Close();
