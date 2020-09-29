@@ -37,6 +37,16 @@ namespace StudentManagement
                 //names_reader.Dispose();
             }
 
+            var students = new Student[1000];
+
+            var rnd = new Random();
+            for (var i = 0; i < students.Length; i++)
+            {
+                var student = new Student();
+                student.Surname = surnames[rnd.Next(surnames.Count)];
+                student.Name = names[rnd.Next(names.Count)];
+                student.Patronymic = patronymics[rnd.Next(patronymics.Count)];
+            }
 
             Console.WriteLine("Нажмите Enter для выхода");
             Console.ReadLine();
