@@ -13,7 +13,7 @@ namespace StudentManagement
         {
             GetNames(out var surnames, out var names, out var patronymics);
 
-            var students = GetStudents(surnames, names, patronymics, 1000);
+            var students = GetStudents(surnames, names, patronymics, 100);
 
             const string students_data_file = "students.csv";
             SaveToFile(students, students_data_file);
@@ -27,8 +27,25 @@ namespace StudentManagement
 
             SortStudentsByAverageRating(students2);
 
-            for (var i = 0; i < students2.Length; i++)
-                Console.WriteLine(students2[i]);
+            //for (var i = 0; i < students2.Length; i++)
+            //    Console.WriteLine(students2[i]);
+
+            Console.WriteLine("10% лучших студентов:");
+            var best_count = students2.Length / 10;
+
+            for (var i = 0; i < best_count; i++)
+            {
+                Console.WriteLine("{0} - {1}", i, students2[i]);
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("10% худших студентов:");
+            var last_count = students2.Length / 10;
+
+            for (var i = students2.Length - last_count; i < students2.Length; i++)
+            {
+                Console.WriteLine("{0} - {1}", i, students2[i]);
+            }
 
             Console.WriteLine("Нажмите Enter для выхода");
             Console.ReadLine();
