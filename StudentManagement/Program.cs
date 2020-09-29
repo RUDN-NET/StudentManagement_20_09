@@ -29,10 +29,27 @@ namespace StudentManagement
 
             SortStudentsByAverageRating(students2);
 
+            var homonyms = GetHomonyms(students2);
+
             PrintBestLastStudents(students2);
 
             Console.WriteLine("Нажмите Enter для выхода");
             Console.ReadLine();
+        }
+
+        private static Dictionary<string, List<Student>> GetHomonyms(Student[] Students)
+        {
+            var homonyms = new Dictionary<string, List<Student>>();
+
+            foreach (var student in Students)
+            {
+                if(homonyms.ContainsKey(student.Surname))
+                    homonyms[student.Surname].Add(student);
+                else
+                    homonyms.Add(student.Surname, new List<Student> {student});
+            }
+
+            return homonyms;
         }
 
         private static void SaveToFile(Student[] Students, string FileName)
@@ -42,8 +59,9 @@ namespace StudentManagement
                 for (var i = 0; i < Students.Length; i++)
                 {
                     var student = Students[i];
-                    writer.WriteLine("{0};{1};{2};{3}",
+                    writer.WriteLine("{0};{1};{2};{3};{4}",
                         student.Surname, student.Name, student.Patronymic,
+                        student.Birthday.ToShortDateString(),
                         string.Join(";", student.Ratings));
                 }
             }
@@ -98,12 +116,13 @@ namespace StudentManagement
                     student.Surname = components[0];
                     student.Name = components[1];
                     student.Patronymic = components[2];
+                    student.Birthday = DateTime.Parse(components[3]);
 
-                    var ratings_count = components.Length - 3;
+                    var ratings_count = components.Length - 4;
 
                     var ratings = new List<int>(ratings_count);
                     for(var i = 0; i < ratings_count; i++)
-                        ratings.Add(int.Parse(components[i + 3]));
+                        ratings.Add(int.Parse(components[i + 4]));
 
                     student.Ratings = ratings;
 
@@ -127,6 +146,14 @@ namespace StudentManagement
                 student.Patronymic = Patronymics[rnd.Next(Patronymics.Count)];
 
                 student.Ratings = GetRandomRatings(rnd, rnd.Next(5, 20));
+
+                //DateTime.DaysInMonth()
+
+                var year = rnd.Next(1995, 2003);
+                var month = rnd.Next(1, 13);
+                var day = rnd.Next(1, DateTime.DaysInMonth(year, month) + 1);
+
+                student.Birthday = new DateTime(year, month, day);
 
                 students[i] = student;
             }

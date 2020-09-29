@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace StudentManagement
 {
@@ -11,6 +12,8 @@ namespace StudentManagement
         public string Patronymic { get; set; }
 
         public List<int> Ratings { get; set; } = new List<int>();
+
+        public DateTime Birthday { get; set; }
 
         public int RatingsCount
         {
@@ -39,9 +42,23 @@ namespace StudentManagement
             }
         }
 
+        public int Age
+        {
+            get
+            {
+                var delta = DateTime.Today - Birthday;
+                var days_count = (int)delta.TotalDays;
+                var years_count = days_count / ((365 * 3 + 366) / (double)4);
+                var age = (int)Math.Ceiling(years_count); // Округление вверх
+                //Math.Floor() // Округление вниз
+                //Math.Round() // Математическое округление
+                return age;
+            }
+        }
+
         public override string ToString()
         {
-            return $"Студент {Surname} {Name} {Patronymic} ({RatingsAverage:f3}): {string.Join(", ", Ratings)}";
+            return $"Студент {Surname} {Name} {Patronymic} [{Birthday:dd.MM.yyyy} - {Age} лет] ({RatingsAverage:f3}): {string.Join(", ", Ratings)}";
         }
 
         //public static implicit operator double(Student student) // Оператор неявного преобразования типа данных "Студент" в тип данных "вещественное число двойной точности"
