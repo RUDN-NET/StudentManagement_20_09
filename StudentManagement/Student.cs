@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace StudentManagement
 {
@@ -11,5 +9,12 @@ namespace StudentManagement
         public string Name { get; set; }
 
         public string Patronymic { get; set; }
+
+        public List<int> Ratings { get; set; } = new List<int>();
+
+        public override string ToString()
+        {
+            return $"Студент {Surname} {Name} {Patronymic}: {string.Join(", ", Ratings)}";
+        }
     }
 }

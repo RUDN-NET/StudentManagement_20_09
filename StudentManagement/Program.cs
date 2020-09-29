@@ -46,10 +46,25 @@ namespace StudentManagement
                 student.Surname = surnames[rnd.Next(surnames.Count)];
                 student.Name = names[rnd.Next(names.Count)];
                 student.Patronymic = patronymics[rnd.Next(patronymics.Count)];
+
+                student.Ratings = GetRandomRatings(rnd, rnd.Next(5, 20));
+
+                students[i] = student;
+
+                Console.WriteLine(student);
             }
 
             Console.WriteLine("Нажмите Enter для выхода");
             Console.ReadLine();
+        }
+
+        private static List<int> GetRandomRatings(Random rnd, int Count)
+        {
+            var ratings = new List<int>(Count);
+            for(var i = 0; i < Count; i++)
+                ratings.Add(rnd.Next(0, 101)); // [0, 101) = [0, 100]
+
+            return ratings;
         }
     }
 }
