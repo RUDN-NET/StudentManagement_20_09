@@ -10,7 +10,8 @@ namespace StudentManagement
 
         static void Main(string[] args)
         {
-            ComplexTest.Start();
+            //ComplexTest.Start();
+            CollectionsOverview.Start();
 
             GetNames(out var surnames, out var names, out var patronymics);
 
