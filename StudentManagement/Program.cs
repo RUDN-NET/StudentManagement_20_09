@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 
 namespace StudentManagement
 {
@@ -12,25 +13,32 @@ namespace StudentManagement
         {
             GetNames(out var surnames, out var names, out var patronymics);
 
-            var students = new Student[1000];
+            var students = GetStudents(surnames, names, patronymics, 1000);
+
+
+
+            Console.WriteLine("Нажмите Enter для выхода");
+            Console.ReadLine();
+        }
+
+        private static Student[] GetStudents(List<string> Surnames, List<string> Names, List<string> Patronymics, int Count)
+        {
+            var students = new Student[Count];
 
             var rnd = new Random();
             for (var i = 0; i < students.Length; i++)
             {
                 var student = new Student();
-                student.Surname = surnames[rnd.Next(surnames.Count)];
-                student.Name = names[rnd.Next(names.Count)];
-                student.Patronymic = patronymics[rnd.Next(patronymics.Count)];
+                student.Surname = Surnames[rnd.Next(Surnames.Count)];
+                student.Name = Names[rnd.Next(Names.Count)];
+                student.Patronymic = Patronymics[rnd.Next(Patronymics.Count)];
 
                 student.Ratings = GetRandomRatings(rnd, rnd.Next(5, 20));
 
                 students[i] = student;
-
-                Console.WriteLine(student);
             }
 
-            Console.WriteLine("Нажмите Enter для выхода");
-            Console.ReadLine();
+            return students;
         }
 
         private static void GetNames(out List<string> Surnames, out List<string> Names, out List<string> Patronymics)
