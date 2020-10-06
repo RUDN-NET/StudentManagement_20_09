@@ -52,6 +52,9 @@ namespace StudentManagement
             var current_dir = new DirectoryInfo(".");
             var current_dir2 = new DirectoryInfo(Environment.CurrentDirectory);
 
+            //File.Exists()
+            //Directory.Move();
+
             //foreach (var json_file in current_dir.GetFiles("*.json"))
             //{
             //    Console.WriteLine(json_file);
@@ -124,10 +127,54 @@ namespace StudentManagement
             }
         }
 
+        private static void TestDriveInfo()
+        {
+            var c_drive = new DriveInfo("c:\\");
+
+            var system_drives = DriveInfo.GetDrives();
+
+            foreach (var drive in system_drives)
+            {
+                var root = drive.RootDirectory;
+                Console.WriteLine("Диск: {0}", drive.Name);
+
+                PrintDirectory(root, 0, 3);
+            }
+        }
+
+        private static void PrintDirectory(DirectoryInfo dir, int Level, int MaxLevel)
+        {
+            if (Level >= MaxLevel) return;
+
+            Console.WriteLine(dir);
+
+            try
+            {
+                var sub_dirs = dir.GetDirectories();
+                var files = dir.GetFiles();
+
+                var offset = new string(' ', Level * 3);
+
+                foreach (var sub_dir in sub_dirs)
+                    Console.WriteLine("{0}[d]{1}", offset, sub_dir.Name);
+
+                foreach (var file in files)
+                    Console.WriteLine("{0}[f]{1} - {2}b", offset, file.Name, file.Length);
+
+                foreach (var sub_dir in sub_dirs)
+                    PrintDirectory(sub_dir, Level + 1, MaxLevel);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Console.WriteLine("Доступ к каталогу {0} запрещён", dir);
+            }
+        }
+
         static void Main(string[] args)
         {
             //TestFileInfo();
-            TestDirectoryInfo();
+            //TestDirectoryInfo();
+            TestDriveInfo();
 
             Console.WriteLine("Нажмите Enter для выхода");
             Console.ReadLine();
