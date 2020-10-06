@@ -240,10 +240,24 @@ namespace StudentManagement
             {
                 bin_reader.ReadInt32();
             }
+
         }
 
         static void Main(string[] args)
         {
+            var file_path = Path.Combine(@"c:\", @"123\TestDir\", "TestFile.txt");
+            var dir_name = Path.GetDirectoryName(file_path);
+            var file_name = Path.GetFileName(file_path);
+            var file_extension = Path.GetExtension(file_path);
+
+            var file_with_new_ext = Path.ChangeExtension(file_path, ".exe");
+
+            var path_components = file_path.Split('\\', '/');
+
+            var file_name1 = path_components[path_components.Length - 1];
+            var dot_index = file_name1.IndexOf('.');
+            var extension = file_name1.Substring(dot_index);
+
             //TestFileInfo();
             //TestDirectoryInfo();
             //TestDriveInfo();
