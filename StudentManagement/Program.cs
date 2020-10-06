@@ -226,13 +226,19 @@ namespace StudentManagement
                 while (true)
                 {
                     var readed = data_stream.Read(buffer, 0, buffer_length);
-                    if(readed == 0) break;
+                    if (readed == 0) break;
 
                     new_file_stream.Write(buffer, 0, readed);
 
                     total_readed += readed;
                     Console.WriteLine("Скопировано {0:p}", total_readed / (double)stream_length);
                 }
+            }
+
+            using (var bin_reader = new BinaryReader(data_file.OpenRead()))
+            using (var bin_writer = new BinaryWriter(new FileStream("new_file.bin", FileMode.Create, FileAccess.Write)))
+            {
+                bin_reader.ReadInt32();
             }
         }
 
