@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace StudentManagement
 {
@@ -10,202 +11,119 @@ namespace StudentManagement
 
         static void Main(string[] args)
         {
-            GetNames(out var surnames, out var names, out var patronymics);
+            char[] cc = new[] { 'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '!' };
+            var s1 = "Hello";
+            var s2 = "World!";
 
-            var students = GetStudents(surnames, names, patronymics, 1000);
+            var c0 = s1[0];
+            //s1[0] = 'A'; // Нельзя!
 
-            const string students_data_file = "students.csv";
-            SaveToFile(students, students_data_file);
+            var str = s1 + " " + s2;
 
-            var students2 = ReadFromFile(students_data_file);
+            //var s0 = "";
+            //for (var i = 0; i < 10000; i++)
+            //    s0 += "value=" + i + ";";
 
-            SortStudentsByAverageRating(students2);
+            StringBuilder builder = new StringBuilder(10000);
+            for (var i = 0; i < 100; i++)
+                //builder.Append($"value={i};");
+                builder.AppendFormat("value={0}", i);
 
-            var homonyms = GetHomonyms(students2);
+            if (builder.Length > 0)
+                builder.Length--;
+            var str_result = builder.ToString();
+            //str_result = str_result.Substring(0, str_result.Length - 1);
 
-            var birthdays = new Dictionary<string, List<Student>>();
+            var compare_result = string.Compare("ABC", "ABC");
 
-            foreach (var student in students2)
+            var format_result = string.Format("{0}={1}={0}", 5, "x");
+
+            var values = new int[10];
+            for (var i = 0; i < 10; i++)
+                values[i] = i;
+
+            var str_values = string.Join("; ", values);
+
+            var str_values_builder = new StringBuilder();
+            for (var i = 0; i < values.Length; i++)
+                str_values_builder.AppendFormat("{0}; ", values[i]);
+            if (str_values_builder.Length > 0)
+                str_values_builder.Length -= 2;
+            var str_values2 = str_values_builder.ToString();
+
+            //if(str_values != null && str_values != "")
+            //if(str_values != null && str_values.Length > 0)
+            if (!string.IsNullOrEmpty(str_values))
+                Console.WriteLine("Строка не пуста");
+
+            if (!string.IsNullOrWhiteSpace(str_values))
+                Console.WriteLine("Строка не пуста и в ней есть что-то помимо пробелов");
+
+            var builder2 = new StringBuilder();
+            using (var writer = new StringWriter(builder2))
+                writer.WriteLine();
+
+            using (var reader = new StringReader(str_values + "\r\n" + "123"))
             {
-                var date = student.Birthday.ToString("dd.MM");
-                if(birthdays.ContainsKey(date))
-                    birthdays[date].Add(student);
-                else
-                    birthdays.Add(date, new List<Student> { student });
+                var str1 = reader.ReadLine();
+                var str2 = reader.ReadLine();
             }
 
-            foreach (var birthday in birthdays)
+            var data_file_text = File.ReadAllText("DataFile.txt");
+
+            //[A-Za-z][A-Za-z0-9_-]*@[A-Za-z0-9._]+\.[A-Za-z0-9]+
+            // \w+@\w+\.\w+
+            // \w - любая буква слова
+            // \W - не (любая буква слова)
+            // \d - любая цифра
+            // \D - всё кроме цифр
+            // \b - граница слова
+            // \b\w+@\w+\.\w+\b
+            
+            var email_regex = new Regex(@"\w+@\w+\.\w+");
+
+            var email_matches = email_regex.Matches(data_file_text);
+            foreach (Match match in email_matches)
+                Console.WriteLine("{0} - {1}", match.Value, match.Index);
+
+            var times = Regex.Matches(data_file_text, @"(\d{2}\.\d{2}\.(\d{4}|\d{2})) (\d{2}:\d{2}:\d{2})");
+            foreach (Match match in times)
             {
-                if (birthday.Value.Count > 1)
-                {
-                    Console.WriteLine(birthday.Key);
-                    foreach (var student in birthday.Value)
-                        Console.WriteLine("\t{0} {1} {2} ({3:dd.MM.yyyy} - возраст {4})",
-                            student.Surname, student.Name, student.Patronymic,
-                            student.Birthday, student.Age);
-                }
+                var date_str = match.Groups[0];
+                var time_str = match.Groups[3];
+
+                var time = DateTime.Parse(match.Value);
+                Console.WriteLine(time);
             }
+
+            var correct_phone = "+7(916)123-45-67";
+            var incorrect_phone = "Hello(916)asd123-45-67";
+
+            var contains_correct_phone = "телефон +7(916)123-45-67 старосты";
+            var not_contains_correct_phone = "телефон старосты";
+
+            // (\+\d+|8)\(\d{3,}\)\d{2,3}-\d{2}-\d{2}
+
+            var phone_pattern = @"(\+\d+|8)\(\d{3,}\)\d{2,3}-\d{2}-\d{2}";
+
+            var check_phone_regex = new Regex(@"^(\+\d+|8)\(\d{3,}\)\d{2,3}-\d{2}-\d{2}$", RegexOptions.Compiled);
+
+            if(check_phone_regex.IsMatch(correct_phone))
+                Console.WriteLine("Строка {0} является телефоном", correct_phone);
+
+            if (!check_phone_regex.IsMatch(incorrect_phone))
+                Console.WriteLine("Строка {0} не является телефоном", incorrect_phone);
+
+            var phone_number = Regex.Match(contains_correct_phone, phone_pattern);
+            if(phone_number.Success)
+                Console.WriteLine("Строка содержит телефонный номер {0}", phone_number.Value);
+
+            var phone_number_no_match = Regex.Match(not_contains_correct_phone, phone_pattern);
+            if(!phone_number_no_match.Success)
+                Console.WriteLine("Строка не содержит номера телефона");
 
             Console.WriteLine("Нажмите Enter для выхода");
             Console.ReadLine();
-        }
-
-        private static Dictionary<string, List<Student>> GetHomonyms(Student[] Students)
-        {
-            var homonyms = new Dictionary<string, List<Student>>();
-
-            foreach (var student in Students)
-            {
-                if(homonyms.ContainsKey(student.Surname))
-                    homonyms[student.Surname].Add(student);
-                else
-                    homonyms.Add(student.Surname, new List<Student> {student});
-            }
-
-            return homonyms;
-        }
-
-        private static void SaveToFile(Student[] Students, string FileName)
-        {
-            using (var writer = new StreamWriter(FileName))
-            {
-                for (var i = 0; i < Students.Length; i++)
-                {
-                    var student = Students[i];
-                    writer.WriteLine("{0};{1};{2};{3};{4}",
-                        student.Surname, student.Name, student.Patronymic,
-                        student.Birthday.ToShortDateString(),
-                        string.Join(";", student.Ratings));
-                }
-            }
-        }
-
-        private static void SortStudentsByAverageRating(Student[] Students)
-        {
-            Array.Sort(Students, (s1, s2) =>
-            {
-                var rating1 = s1.RatingsAverage;
-                var rating2 = s2.RatingsAverage;
-                if (rating1 > rating2) return -1;
-                else if (rating1 < rating2) return +1;
-                else return 0;
-            });
-        }
-
-        private static void PrintBestLastStudents(Student[] Students)
-        {
-            Console.WriteLine("10% лучших студентов:");
-            var best_count = Students.Length / 10;
-
-            for (var i = 0; i < best_count; i++)
-            {
-                Console.WriteLine("{0} - {1}", i, Students[i]);
-            }
-
-            Console.WriteLine();
-            Console.WriteLine("10% худших студентов:");
-            var last_count = Students.Length / 10;
-
-            for (var i = Students.Length - last_count; i < Students.Length; i++)
-            {
-                Console.WriteLine("{0} - {1}", i, Students[i]);
-            }
-        }
-
-        private static Student[] ReadFromFile(string FileName)
-        {
-            using (var reader = new StreamReader(FileName))
-            {
-                var students = new List<Student>();
-
-                while (!reader.EndOfStream)
-                {
-                    var line = reader.ReadLine();
-                    if(string.IsNullOrWhiteSpace(line)) 
-                        continue;
-
-                    var components = line.Split(";");
-                    var student = new Student();
-                    student.Surname = components[0];
-                    student.Name = components[1];
-                    student.Patronymic = components[2];
-                    student.Birthday = DateTime.Parse(components[3]);
-
-                    var ratings_count = components.Length - 4;
-
-                    var ratings = new List<int>(ratings_count);
-                    for(var i = 0; i < ratings_count; i++)
-                        ratings.Add(int.Parse(components[i + 4]));
-
-                    student.Ratings = ratings;
-
-                    students.Add(student);
-                }
-
-                return students.ToArray();
-            }
-        }
-
-        private static Student[] GetStudents(List<string> Surnames, List<string> Names, List<string> Patronymics, int Count)
-        {
-            var students = new Student[Count];
-
-            var rnd = new Random();
-            for (var i = 0; i < students.Length; i++)
-            {
-                var student = new Student();
-                student.Surname = Surnames[rnd.Next(Surnames.Count)];
-                student.Name = Names[rnd.Next(Names.Count)];
-                student.Patronymic = Patronymics[rnd.Next(Patronymics.Count)];
-
-                student.Ratings = GetRandomRatings(rnd, rnd.Next(5, 20));
-
-                //DateTime.DaysInMonth()
-
-                var year = rnd.Next(1995, 2003);
-                var month = rnd.Next(1, 13);
-                var day = rnd.Next(1, DateTime.DaysInMonth(year, month) + 1);
-
-                student.Birthday = new DateTime(year, month, day);
-
-                students[i] = student;
-            }
-
-            return students;
-        }
-
-        private static void GetNames(out List<string> Surnames, out List<string> Names, out List<string> Patronymics)
-        {
-            Surnames = new List<string>();
-            Names = new List<string>();
-            Patronymics = new List<string>();
-
-            using (var names_reader = new StreamReader(__NamesFile))
-            {
-                while (!names_reader.EndOfStream)
-                {
-                    var line = names_reader.ReadLine();
-
-                    var components = line.Split(' ');
-
-                    var surname = components[0];
-                    var name = components[1];
-                    var patronymic = components[2];
-
-                    Surnames.Add(surname);
-                    Names.Add(name);
-                    Patronymics.Add(patronymic);
-                }
-            }
-        }
-
-        private static List<int> GetRandomRatings(Random rnd, int Count)
-        {
-            var ratings = new List<int>(Count);
-            for(var i = 0; i < Count; i++)
-                ratings.Add(rnd.Next(0, 101)); // [0, 101) = [0, 100]
-
-            return ratings;
         }
     }
 }
