@@ -10,9 +10,6 @@ namespace StudentManagement
 
         static void Main(string[] args)
         {
-            //ComplexTest.Start();
-            //CollectionsOverview.Start();
-
             GetNames(out var surnames, out var names, out var patronymics);
 
             var students = GetStudents(surnames, names, patronymics, 1000);
@@ -22,18 +19,10 @@ namespace StudentManagement
 
             var students2 = ReadFromFile(students_data_file);
 
-            //var student = students2[0];
-
-            //double rating = student;
-            //double rating2 = (double)student;
-
             SortStudentsByAverageRating(students2);
 
             var homonyms = GetHomonyms(students2);
 
-            //PrintBestLastStudents(students2);
-
-                                          //18.06
             var birthdays = new Dictionary<string, List<Student>>();
 
             foreach (var student in students2)
