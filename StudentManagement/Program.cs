@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace StudentManagement
 {
@@ -170,11 +171,77 @@ namespace StudentManagement
             }
         }
 
+        private static void ReadingFile()
+        {
+            var data_file = new FileInfo(__FileName);
+
+            //var new_file = new FileInfo("new_file.txt");
+
+            //Stream data_stream = data_file.Open(FileMode.Open);
+
+            //var buffer = new byte[1024];
+            //var readed = data_stream.Read(buffer, 0, buffer.Length);
+
+            //var new_file_stream = new_file.Create();
+            //new_file_stream.Write(buffer, 0, readed);
+
+            //StreamReader reader = new StreamReader(data_stream, Encoding.ASCII);
+            //StreamWriter writer = new StreamWriter(new_file_stream, Encoding.UTF8);
+
+            //var str = reader.ReadLine();
+            //var all_text = reader.ReadToEnd();
+
+            //writer.Write("Hello World");
+            //writer.WriteLine("123");
+            //writer.Flush();
+
+            //writer.Close();
+            //reader.Close();
+
+            //data_stream.Close();
+            //new_file_stream.Close();
+
+            //FileStream data_stream1 = null;
+            //try
+            //{
+            //    data_stream1 = data_file.OpenRead();
+
+            //    // Содержимое контракции using(...) { ... }
+            //}
+            //finally
+            //{
+            //    if (data_stream1 != null)
+            //        data_stream1.Dispose();
+            //}
+
+            using (var data_stream = data_file.OpenRead())
+            using (var new_file_stream = new FileStream("new_file.txt", FileMode.Create, FileAccess.Write))
+            //using (var reader = new StreamReader(data_stream, Encoding.ASCII))
+            //using (var writer = new StreamWriter(new_file_stream, Encoding.UTF8))
+            {
+                const int buffer_length = 10; // 1024 * 10; 1024 * 1024
+                var buffer = new byte[buffer_length];
+                long total_readed = 0;
+                var stream_length = data_stream.Length;
+                while (true)
+                {
+                    var readed = data_stream.Read(buffer, 0, buffer_length);
+                    if(readed == 0) break;
+
+                    new_file_stream.Write(buffer, 0, readed);
+
+                    total_readed += readed;
+                    Console.WriteLine("Скопировано {0:p}", total_readed / (double)stream_length);
+                }
+            }
+        }
+
         static void Main(string[] args)
         {
             //TestFileInfo();
             //TestDirectoryInfo();
-            TestDriveInfo();
+            //TestDriveInfo();
+            ReadingFile();
 
             Console.WriteLine("Нажмите Enter для выхода");
             Console.ReadLine();
